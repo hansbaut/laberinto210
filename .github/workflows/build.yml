@@ -31,31 +31,36 @@ jobs:
           pip install buildozer cython pygame-ce pillow
     
       - name: Install Android SDK
-        run: |
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-    
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
-    
-          unzip tools.zip
-    
-          mv cmdline-tools latest
-    
-          export ANDROID_HOME=$HOME/android-sdk
+        run: | 
+          mkdir -p $HOME/android-sdk/cmdline-tools 
+          cd $HOME/android-sdk/cmdline-tools 
+          
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip 
+          
+          unzip tools.zip 
+          
+          mv cmdline-tools latest 
+          
+          export ANDROID_HOME=$HOME/android-sdk 
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-    
+          export PATH=$PATH:$ANDROID_HOME/platform-tools
+          export PATH=$PATH:$ANDROID_HOME/build-tools/33.0.2 
+          
           yes | sdkmanager --licenses || true
-    
-          sdkmanager \
-            "platform-tools" \
-            "platforms;android-33" \
-            "build-tools;33.0.2"
-    
+          
+          sdkmanager "platform-tools"
+          sdkmanager "platforms;android-33"
+          sdkmanager "build-tools;33.0.2"
+          
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/build-tools/33.0.2" >> $GITHUB_PATH
+          
       - name: Build APK
+        env:
+          ANDROID_HOME: /home/runner/android-sdk
         run: |
-          buildozer android debug
+            buildozer android debug
     
       - name: Upload APK
         uses: actions/upload-artifact@v4
