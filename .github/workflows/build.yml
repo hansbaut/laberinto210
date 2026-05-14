@@ -45,4 +45,3 @@ build:
       with:
         name: APK
         path: bin/*.apk
-  ```
