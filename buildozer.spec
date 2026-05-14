@@ -42,7 +42,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, pygame==2.5.2, pillow, sdl2_image, sdl2_ttf, sdl2_mixer
+requirements = python3,pygame-ce,pillow
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
