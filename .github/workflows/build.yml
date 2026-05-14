@@ -21,9 +21,38 @@ jobs:
     
       - name: Install dependencies
         run: |
+          sudo apt update
+          sudo apt install -y \
+            zip unzip openjdk-17-jdk python3-pip \
+            build-essential git wget curl \
+            libncurses5
+    
           python -m pip install --upgrade pip
           pip install buildozer cython pygame-ce pillow
     
+      - name: Install Android SDK
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+    
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
+    
+          unzip tools.zip
+    
+          mv cmdline-tools latest
+    
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+    
+          yes | sdkmanager --licenses
+    
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-33" \
+            "build-tools;33.0.2"
+    
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+
       - name: Build APK
         run: |
           buildozer android debug
@@ -33,5 +62,3 @@ jobs:
         with:
           name: apk
           path: bin/*.apk
-  
-
