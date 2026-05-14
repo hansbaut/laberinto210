@@ -1,47 +1,37 @@
+
 name: Android APK Build
 
-on:
-push:
-branches:
-- main
-
+'on':
+  push:
+    branches:
+      - main
+    
 jobs:
-build:
-  runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+    
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+    
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install buildozer cython pygame-ce pillow
+    
+      - name: Build APK
+        run: |
+          buildozer android debug
+    
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: bin/*.apk
+  
 
-  steps:
-    - name: Checkout source
-      uses: actions/checkout@v4
-  
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-  
-    - name: Install system dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y \
-          git zip unzip openjdk-17-jdk python3-pip \
-          autoconf libtool pkg-config zlib1g-dev \
-          libncurses5-dev libncursesw5-dev \
-          cmake libffi-dev libssl-dev \
-          build-essential ccache \
-          libltdl-dev \
-          ffmpeg libsdl2-dev libsdl2-image-dev \
-          libsdl2-mixer-dev libsdl2-ttf-dev
-  
-    - name: Install Python dependencies
-      run: |
-        pip install --upgrade pip
-        pip install buildozer cython pygame-ce pillow
-  
-    - name: Build APK
-      run: |
-        buildozer android debug
-  
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: APK
-        path: bin/*.apk
