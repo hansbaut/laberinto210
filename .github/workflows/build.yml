@@ -44,7 +44,7 @@ jobs:
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
     
-          yes | sdkmanager --licenses
+          yes | sdkmanager --licenses || true
     
           sdkmanager \
             "platform-tools" \
